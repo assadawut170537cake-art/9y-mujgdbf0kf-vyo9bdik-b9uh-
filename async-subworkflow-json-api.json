@@ -1,0 +1,104 @@
+{
+  "heym": true,
+  "nodes": [
+    {
+      "id": "async-subworkflow-json-api_setup_note",
+      "type": "sticky",
+      "position": {
+        "x": 230,
+        "y": 600
+      },
+      "data": {
+        "label": "SetupNote",
+        "note": "### Before you run\n- Point the Execute node at the correct reusable workflow."
+      }
+    },
+    {
+      "id": "async-subworkflow-json-api_guide_note",
+      "type": "sticky",
+      "position": {
+        "x": -360,
+        "y": -70
+      },
+      "data": {
+        "label": "GuideNote",
+        "note": "### Async Sub-workflow Dispatcher\nValidate an incoming brief and dispatch a reusable sub-workflow in the background without a response node.\n\n### Main path\nBriefRequest -> HasBrief -> RunResearchSubflow -> MissingBrief\n\nRead this note first, then replace any blank setup fields before your first real run."
+      }
+    },
+    {
+      "id": "api_1",
+      "type": "textInput",
+      "position": {
+        "x": 60,
+        "y": 260
+      },
+      "data": {
+        "label": "BriefRequest",
+        "inputFields": [
+          {
+            "key": "brief",
+            "defaultValue": "Summarize the top three launch risks for this product update."
+          }
+        ]
+      }
+    },
+    {
+      "id": "api_2",
+      "type": "condition",
+      "position": {
+        "x": 380,
+        "y": 260
+      },
+      "data": {
+        "label": "HasBrief",
+        "condition": "$BriefRequest.body.brief.trim().length > 0"
+      }
+    },
+    {
+      "id": "api_3",
+      "type": "execute",
+      "position": {
+        "x": 760,
+        "y": 140
+      },
+      "data": {
+        "label": "RunResearchSubflow",
+        "executeWorkflowId": "",
+        "executeInput": "$BriefRequest.body.brief",
+        "executeDoNotWait": true
+      }
+    },
+    {
+      "id": "api_5",
+      "type": "throwError",
+      "position": {
+        "x": 760,
+        "y": 420
+      },
+      "data": {
+        "label": "MissingBrief",
+        "errorMessage": "brief is required before dispatching the sub-workflow",
+        "httpStatusCode": 400
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "api_e1",
+      "source": "api_1",
+      "target": "api_2"
+    },
+    {
+      "id": "api_e2",
+      "source": "api_2",
+      "target": "api_3",
+      "sourceHandle": "true"
+    },
+    {
+      "id": "api_e4",
+      "source": "api_2",
+      "target": "api_5",
+      "sourceHandle": "false"
+    }
+  ]
+}

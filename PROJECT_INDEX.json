@@ -1,0 +1,1165 @@
+{
+  "project_name": "Mark LV",
+  "project_root": "J:\\Mark-LV",
+  "description": "The Ultimate Cross-Platform Personal AI Assistant — By FatihMakes",
+  "python_version": "3.14.7",
+  "dependencies": [
+    "PyQt6>=6.6,<7",
+    "sounddevice>=0.4,<1",
+    "numpy>=1.24,<3",
+    "google-genai>=2.8.0,<3",
+    "requests>=2.31,<3",
+    "beautifulsoup4>=4.12,<5",
+    "playwright>=1.40,<2",
+    "yt-dlp",
+    "pyautogui",
+    "pyperclip",
+    "pillow>=10,<13",
+    "opencv-python>=4.8,<5",
+    "mss>=9,<11",
+    "psutil>=5.9,<8",
+    "send2trash                   # file_controller — recoverable deletes",
+    "python-pptx                  # file_processor — presentation reading",
+    "fastapi>=0.110,<1",
+    "uvicorn[standard]>=0.27,<1",
+    "cryptography>=42,<50",
+    "python-multipart>=0.0.9,<1",
+    "qrcode[pil]>=7,<9",
+    "google-api-python-client     # gmail_control, calendar_control — OAuth",
+    "google-auth-oauthlib         # gmail_control, calendar_control — OAuth",
+    "tinytuya                     # home_assistant — Tuya / Smart Life bulbs",
+    "paho-mqtt                    # printer_control — MQTT printers",
+    "openpyxl                     # excel_writer — spreadsheet output",
+    "youtube-transcript-api       # youtube_video — transcript fetch for summaries",
+    "pygetwindow                  # game_updater, chat_takeover — window geometry",
+    "comtypes;   sys_platform == \"win32\"",
+    "pycaw;      sys_platform == \"win32\"",
+    "win10toast; sys_platform == \"win32\"",
+    "pywin32;    sys_platform == \"win32\"",
+    "wmi;        sys_platform == \"win32\"",
+    "pywinauto;  sys_platform == \"win32\"",
+    "ddgs>=9,<10                  # web_search — the maintained successor to",
+    "pdfplumber                   # file_processor — PDF text and tables",
+    "PyPDF2                       # file_processor — PDF fallback reader",
+    "python-docx                  # file_processor — .docx reading",
+    "pynvml                       # system_monitor + the HUD's GPU meter (NVIDIA)"
+  ],
+  "structure": {},
+  "modules": {},
+  "actions": {
+    "actions\\background_monitor.py": {
+      "classes": [],
+      "functions": [
+        "_is_blocked",
+        "_slug",
+        "_title_hash",
+        "_load",
+        "_save",
+        "add_monitor",
+        "remove_monitor",
+        "list_monitors",
+        "check_all"
+      ],
+      "imports": [
+        "import hashlib",
+        "import json",
+        "import re",
+        "from datetime import datetime",
+        "from pathlib import Path",
+        "from memory.memory_manager import load_memory",
+        "from memory.memory_manager import load_memory, MEMORY_PATH, _lock",
+        "from actions.web_search import _ddg_news"
+      ],
+      "lines": 160
+    },
+    "actions\\browser_control.py": {
+      "classes": [
+        "_BrowserSession:",
+        "_SessionRegistry:"
+      ],
+      "functions": [
+        "_normalize_url",
+        "_user_agent",
+        "_real_profile_dir",
+        "_firefox_profile_dir",
+        "_find_opera_windows",
+        "_find_exe_windows",
+        "_resolve_browser",
+        "_detect_default_browser",
+        "_open_native",
+        "__init__"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import asyncio",
+        "import concurrent.futures",
+        "import os",
+        "import platform",
+        "import shutil",
+        "import subprocess",
+        "import threading",
+        "import webbrowser",
+        "from pathlib import Path"
+      ],
+      "lines": 1133
+    },
+    "actions\\code_helper.py": {
+      "classes": [
+        "_W:"
+      ],
+      "functions": [
+        "get_base_dir",
+        "_get_api_key",
+        "_get_gemini",
+        "generate_content",
+        "_clean_code",
+        "_resolve_save_path",
+        "_read_file",
+        "_save_file",
+        "_preview",
+        "_has_error"
+      ],
+      "imports": [
+        "import subprocess",
+        "import sys",
+        "import json",
+        "import re",
+        "import time",
+        "from pathlib import Path",
+        "from core import gemini",
+        "import pyautogui",
+        "import base64",
+        "from google.genai import types"
+      ],
+      "lines": 634
+    },
+    "actions\\computer_control.py": {
+      "classes": [],
+      "functions": [
+        "_base_dir",
+        "_load_config",
+        "_platform_os",
+        "_get_os",
+        "_get_api_key",
+        "_safe_screenshot_path",
+        "_require_pyautogui",
+        "_random_data",
+        "_user_profile",
+        "_type"
+      ],
+      "imports": [
+        "import io",
+        "import json",
+        "import platform",
+        "import re",
+        "import string",
+        "import subprocess",
+        "import sys",
+        "import time",
+        "import random",
+        "from pathlib import Path"
+      ],
+      "lines": 590
+    },
+    "actions\\computer_settings.py": {
+      "classes": [],
+      "functions": [
+        "_get_base_dir",
+        "_get_api_key",
+        "_get_macos_wifi_interface",
+        "volume_up",
+        "volume_down",
+        "volume_mute",
+        "volume_get",
+        "brightness_get",
+        "brightness_set",
+        "volume_set"
+      ],
+      "imports": [
+        "import json",
+        "import re",
+        "import sys",
+        "import time",
+        "import subprocess",
+        "import platform",
+        "from pathlib import Path",
+        "import pyautogui",
+        "import pyperclip",
+        "from core import confirm"
+      ],
+      "lines": 963
+    },
+    "actions\\desktop.py": {
+      "classes": [],
+      "functions": [
+        "_get_base_dir",
+        "_get_api_key",
+        "_get_desktop",
+        "_build_sandbox",
+        "_execute_generated_code",
+        "_ask_gemini_for_desktop_action",
+        "set_wallpaper",
+        "set_wallpaper_from_url",
+        "get_current_wallpaper",
+        "organize_desktop"
+      ],
+      "imports": [
+        "import os",
+        "import sys",
+        "import json",
+        "import shutil",
+        "import subprocess",
+        "import tempfile",
+        "import platform",
+        "from pathlib import Path",
+        "from datetime import datetime",
+        "import pyautogui"
+      ],
+      "lines": 519
+    },
+    "actions\\dev_agent.py": {
+      "classes": [
+        "_W:",
+        "RateLimitError"
+      ],
+      "functions": [
+        "get_base_dir",
+        "_get_api_key",
+        "_get_model",
+        "generate_content",
+        "_strip_fences",
+        "_is_rate_limit",
+        "_parse_traceback",
+        "_classify_error",
+        "_has_error",
+        "_plan_project"
+      ],
+      "imports": [
+        "import subprocess",
+        "import sys",
+        "import json",
+        "import re",
+        "import time",
+        "from pathlib import Path",
+        "from core import gemini"
+      ],
+      "lines": 640
+    },
+    "actions\\file_controller.py": {
+      "classes": [],
+      "functions": [
+        "_undo_move",
+        "_fn",
+        "_undo_create",
+        "_fn",
+        "_undo_write",
+        "_fn",
+        "_restore_from_trash",
+        "_is_safe_path",
+        "_get_desktop",
+        "_get_downloads"
+      ],
+      "imports": [
+        "import os",
+        "import shutil",
+        "import platform",
+        "from pathlib import Path",
+        "from datetime import datetime",
+        "import send2trash",
+        "from core.undo import push_undo",
+        "import win32com.client"
+      ],
+      "lines": 770
+    },
+    "actions\\file_processor.py": {
+      "classes": [
+        "_W:"
+      ],
+      "functions": [
+        "_get_api_key",
+        "_gemini_client",
+        "generate_content",
+        "_detect_type",
+        "_file_size_str",
+        "_output_path",
+        "_process_image",
+        "_process_pdf",
+        "_extract_pdf_text",
+        "_process_text_doc"
+      ],
+      "imports": [
+        "import os",
+        "import re",
+        "import json",
+        "import shutil",
+        "import subprocess",
+        "import tempfile",
+        "from pathlib import Path",
+        "from datetime import datetime",
+        "from core import gemini",
+        "from PIL import Image"
+      ],
+      "lines": 924
+    },
+    "actions\\flight_finder.py": {
+      "classes": [],
+      "functions": [
+        "_get_base_dir",
+        "_get_api_key",
+        "_parse_date",
+        "_build_google_flights_url",
+        "_search_flights_browser",
+        "_parse_flights_with_gemini",
+        "_format_spoken",
+        "_format_text_report",
+        "_save_to_desktop",
+        "flight_finder"
+      ],
+      "imports": [
+        "import json",
+        "import re",
+        "import subprocess",
+        "import sys",
+        "from datetime import datetime, timedelta",
+        "from pathlib import Path",
+        "from config import is_windows, is_mac, is_linux",
+        "from core import gemini",
+        "import time",
+        "from actions.browser_control import browser_control"
+      ],
+      "lines": 406
+    },
+    "actions\\game_updater.py": {
+      "classes": [],
+      "functions": [
+        "_find_steam_path",
+        "_find_steam_windows",
+        "_find_steam_mac",
+        "_find_steam_linux",
+        "_steam_exe",
+        "_launch_steam_url",
+        "_get_steam_libraries",
+        "_get_steam_games",
+        "_is_steam_running",
+        "_get_steam_window_rect"
+      ],
+      "imports": [
+        "import os",
+        "import platform",
+        "import re",
+        "import sys",
+        "import json",
+        "import time",
+        "import subprocess",
+        "import threading",
+        "from pathlib import Path",
+        "from datetime import datetime"
+      ],
+      "lines": 1102
+    },
+    "actions\\open_app.py": {
+      "classes": [],
+      "functions": [
+        "_normalize",
+        "_launch_windows",
+        "_launch_macos",
+        "_launch_linux",
+        "open_app"
+      ],
+      "imports": [
+        "import time",
+        "import subprocess",
+        "import platform",
+        "import shutil",
+        "import psutil",
+        "import pyautogui",
+        "import pyautogui"
+      ],
+      "lines": 294
+    },
+    "actions\\proactive.py": {
+      "classes": [
+        "ProactiveEngine:"
+      ],
+      "functions": [
+        "__init__",
+        "should_trigger",
+        "mark_triggered",
+        "build_prompt"
+      ],
+      "imports": [
+        "import time",
+        "from datetime import datetime",
+        "from memory.memory_manager import format_memory_for_prompt"
+      ],
+      "lines": 128
+    },
+    "actions\\reminder.py": {
+      "classes": [],
+      "functions": [
+        "_base_dir",
+        "_get_os",
+        "_scripts_dir",
+        "_sanitise",
+        "_write_notify_script",
+        "_schedule_windows",
+        "_schedule_mac",
+        "_schedule_linux",
+        "reminder"
+      ],
+      "imports": [
+        "import json",
+        "import os",
+        "import platform",
+        "import shutil",
+        "import subprocess",
+        "import sys",
+        "from datetime import datetime",
+        "from pathlib import Path",
+        "from plyer import notification",
+        "from win10toast import ToastNotifier"
+      ],
+      "lines": 368
+    },
+    "actions\\screen_processor.py": {
+      "classes": [],
+      "functions": [
+        "_base_dir",
+        "_load_config",
+        "_save_config_key",
+        "_get_os",
+        "_compress",
+        "_capture_screen",
+        "_cv2_backend",
+        "_probe_camera",
+        "_detect_camera_index",
+        "_get_camera_index"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import io",
+        "import json",
+        "import sys",
+        "from pathlib import Path",
+        "import numpy as np",
+        "import cv2",
+        "import mss",
+        "import mss.tools",
+        "import PIL.Image"
+      ],
+      "lines": 184
+    },
+    "actions\\send_message.py": {
+      "classes": [],
+      "functions": [
+        "_base_dir",
+        "_get_os",
+        "_require_pyautogui",
+        "_paste_text",
+        "_clear_and_paste",
+        "_open_app",
+        "_open_browser_url",
+        "_search_in_app",
+        "_desktop_send",
+        "_send_whatsapp"
+      ],
+      "imports": [
+        "import json",
+        "import subprocess",
+        "import sys",
+        "import time",
+        "from pathlib import Path",
+        "import pyautogui",
+        "import pyperclip",
+        "import webbrowser",
+        "from plugins import _whatsapp_core as wa"
+      ],
+      "lines": 349
+    },
+    "actions\\system_monitor.py": {
+      "classes": [
+        "_Util",
+        "SystemMonitor:"
+      ],
+      "functions": [
+        "_nvml_gpu",
+        "_get_gpu_usage",
+        "_get_cpu_temp",
+        "get_system_status",
+        "__init__",
+        "_can_alert",
+        "_record",
+        "check"
+      ],
+      "imports": [
+        "import ctypes",
+        "import platform",
+        "import time",
+        "import psutil",
+        "import pynvml  # type: ignore",
+        "import wmi  # type: ignore"
+      ],
+      "lines": 201
+    },
+    "actions\\video_player.py": {
+      "classes": [],
+      "functions": [
+        "_begin_open",
+        "_still_wanted",
+        "_is_url",
+        "_local_path",
+        "_resolve_youtube",
+        "has",
+        "best",
+        "_search_page",
+        "video_player",
+        "_play_youtube"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import re",
+        "import threading",
+        "import webbrowser",
+        "from pathlib import Path",
+        "import yt_dlp",
+        "from urllib.parse import quote_plus"
+      ],
+      "lines": 318
+    },
+    "actions\\weather_report.py": {
+      "classes": [],
+      "functions": [
+        "weather_action",
+        "_log"
+      ],
+      "imports": [
+        "import webbrowser",
+        "from urllib.parse import quote_plus"
+      ],
+      "lines": 72
+    },
+    "actions\\web_search.py": {
+      "classes": [
+        "_QuotaCooldown"
+      ],
+      "functions": [
+        "_gemini_available",
+        "_note_gemini_error",
+        "_log_gemini_failure",
+        "_run_bounded",
+        "_run",
+        "_get_base_dir",
+        "_get_api_key",
+        "_gemini_search",
+        "_get_ddgs",
+        "_ddg_search"
+      ],
+      "imports": [
+        "import json",
+        "import sys",
+        "import threading",
+        "import time",
+        "from pathlib import Path",
+        "from core import gemini",
+        "from ddgs import DDGS",
+        "from duckduckgo_search import DDGS",
+        "import re",
+        "from core import gemini"
+      ],
+      "lines": 417
+    },
+    "actions\\youtube_video.py": {
+      "classes": [],
+      "functions": [
+        "_get_base_dir",
+        "_get_api_key",
+        "_open_url",
+        "_scrape_first_video_url",
+        "_extract_video_id",
+        "_is_valid_youtube_url",
+        "_ask_for_url",
+        "_get_transcript",
+        "_summarize_with_gemini",
+        "_save_summary"
+      ],
+      "imports": [
+        "import json",
+        "import re",
+        "import sys",
+        "import time",
+        "import subprocess",
+        "import shutil",
+        "from pathlib import Path",
+        "from datetime import datetime",
+        "from urllib.parse import quote_plus",
+        "import pyautogui"
+      ],
+      "lines": 476
+    }
+  },
+  "core": {
+    "core\\action_loader.py": {
+      "classes": [
+        "ActionRecord:",
+        "ActionRegistry:"
+      ],
+      "functions": [
+        "_opt_upper",
+        "__init__",
+        "get_tool_declarations",
+        "has",
+        "scheduling",
+        "names",
+        "run",
+        "_call_handler",
+        "_validate",
+        "discover_actions"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import importlib.util",
+        "import inspect",
+        "import re",
+        "import sys",
+        "import traceback",
+        "from dataclasses import dataclass, field",
+        "from pathlib import Path",
+        "from typing import Callable, Optional"
+      ],
+      "lines": 222
+    },
+    "core\\audio_devices.py": {
+      "classes": [],
+      "functions": [
+        "_transport_works",
+        "_cb",
+        "_display_name",
+        "configure",
+        "_usable",
+        "_is_pseudo",
+        "_query",
+        "_collect",
+        "prefetch",
+        "_work"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import threading",
+        "import time",
+        "import sounddevice as sd",
+        "import sounddevice as sd",
+        "import platform",
+        "import sounddevice as sd",
+        "import platform",
+        "import sounddevice as sd"
+      ],
+      "lines": 422
+    },
+    "core\\avatar.py": {
+      "classes": [
+        "HoloAvatar:"
+      ],
+      "functions": [
+        "_rate",
+        "_c",
+        "_blend",
+        "__init__",
+        "_mouth_step",
+        "step",
+        "glance",
+        "_pose",
+        "_lut",
+        "paint"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import math",
+        "import random",
+        "import numpy as np",
+        "from PyQt6.QtCore import QLineF, QPointF, QRectF, Qt",
+        "from PyQt6.QtGui import QBrush, QColor, QPainter, QPen, QPolygonF, QRadialGradient",
+        "from core.avatar_mesh import JAW_MAX, JAW_PIVOT, get_head_mesh"
+      ],
+      "lines": 716
+    },
+    "core\\avatar_mesh.py": {
+      "classes": [],
+      "functions": [
+        "_load_obj",
+        "_boundary_loop",
+        "_slerp",
+        "_add_cranium",
+        "ell_r",
+        "_add_neck",
+        "_vertex_normals",
+        "_unique_edges",
+        "_check_landmarks",
+        "build_head"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import collections",
+        "from pathlib import Path",
+        "import numpy as np"
+      ],
+      "lines": 352
+    },
+    "core\\confirm.py": {
+      "classes": [
+        "_Pending:"
+      ],
+      "functions": [
+        "bind",
+        "_log",
+        "request",
+        "resolve",
+        "_worker",
+        "pending_title"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import threading",
+        "import time",
+        "from dataclasses import dataclass",
+        "from typing import Callable, Optional"
+      ],
+      "lines": 162
+    },
+    "core\\echo.py": {
+      "classes": [
+        "EchoGuard:"
+      ],
+      "functions": [
+        "band_energies",
+        "__init__",
+        "gain",
+        "calibrated",
+        "floor",
+        "reliable",
+        "threshold",
+        "required_blocks",
+        "last_similarity",
+        "reset"
+      ],
+      "imports": [
+        "from the microphone block. Pure echo cancels to almost nothing. A second",
+        "from __future__ import annotations",
+        "import time",
+        "import numpy as np"
+      ],
+      "lines": 289
+    },
+    "core\\gemini.py": {
+      "classes": [
+        "_Reply:"
+      ],
+      "functions": [
+        "_cool",
+        "is_quota_error",
+        "is_unavailable_error",
+        "is_gone_error",
+        "live_model",
+        "note_live_failure",
+        "_cooling",
+        "api_key",
+        "client",
+        "__init__"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import asyncio",
+        "import json",
+        "import sys",
+        "import time",
+        "import threading",
+        "from pathlib import Path",
+        "from google import genai",
+        "from google.genai import types as gtypes",
+        "import base64"
+      ],
+      "lines": 550
+    },
+    "core\\hotkey.py": {
+      "classes": [
+        "PushToTalk:"
+      ],
+      "functions": [
+        "chord_label",
+        "qt_sequence",
+        "__init__",
+        "held",
+        "scope",
+        "label",
+        "start",
+        "stop",
+        "set_held",
+        "_can_poll"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import platform",
+        "import threading",
+        "import time",
+        "from typing import Callable",
+        "import ctypes",
+        "import ctypes"
+      ],
+      "lines": 174
+    },
+    "core\\installer.py": {
+      "classes": [],
+      "functions": [
+        "_available",
+        "_pip",
+        "install_for_config"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import importlib.util",
+        "import platform",
+        "import subprocess",
+        "import sys",
+        "from typing import Callable"
+      ],
+      "lines": 139
+    },
+    "core\\llm_client.py": {
+      "classes": [],
+      "functions": [
+        "get_base_dir",
+        "get_llm_provider",
+        "_load_config",
+        "ensure_ollama_running",
+        "_is_up",
+        "warmup_model",
+        "check_model_available",
+        "get_llm_settings",
+        "call_llm",
+        "call_llm_text"
+      ],
+      "imports": [
+        "import json",
+        "import re",
+        "import subprocess",
+        "import sys",
+        "import time",
+        "from pathlib import Path",
+        "from typing import Callable, Generator",
+        "import requests"
+      ],
+      "lines": 587
+    },
+    "core\\plugin_loader.py": {
+      "classes": [
+        "PluginRecord:",
+        "PluginRegistry:"
+      ],
+      "functions": [
+        "_opt_upper",
+        "__init__",
+        "get_tool_declarations",
+        "has",
+        "scheduling",
+        "run",
+        "settings_schemas",
+        "list_for_ui",
+        "_call_run",
+        "_validate"
+      ],
+      "imports": [
+        "from config on every call to get_tool_declarations() / run() / list_for_ui(), so",
+        "from __future__ import annotations",
+        "import importlib.util",
+        "import inspect",
+        "import re",
+        "import sys",
+        "import traceback",
+        "from dataclasses import dataclass, field",
+        "from pathlib import Path",
+        "from typing import Callable, Optional"
+      ],
+      "lines": 286
+    },
+    "core\\stt.py": {
+      "classes": [
+        "WhisperSTT:",
+        "VoskSTT:"
+      ],
+      "functions": [
+        "__init__",
+        "transcribe",
+        "__init__",
+        "process_chunk"
+      ],
+      "imports": [
+        "import json",
+        "import numpy as np",
+        "import os",
+        "from faster_whisper import WhisperModel",
+        "import torch",
+        "from vosk import Model, KaldiRecognizer"
+      ],
+      "lines": 94
+    },
+    "core\\tts.py": {
+      "classes": [
+        "EdgeTTSEngine:",
+        "KokoroTTSEngine:",
+        "ElevenLabsTTSEngine:",
+        "TTSPlayer:"
+      ],
+      "functions": [
+        "_to_numpy",
+        "_compress_silence",
+        "_play_np",
+        "_play_audio_bytes",
+        "__init__",
+        "speak",
+        "_import_kokoro_pipeline",
+        "_try_import",
+        "__init__",
+        "_lang_code"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import asyncio",
+        "import os",
+        "import queue as _queue",
+        "import threading",
+        "from typing import Callable, Optional",
+        "import numpy as np",
+        "import sounddevice as sd",
+        "import miniaudio",
+        "import edge_tts"
+      ],
+      "lines": 443
+    },
+    "core\\undo.py": {
+      "classes": [
+        "_Entry:"
+      ],
+      "functions": [
+        "push_undo",
+        "can_undo",
+        "peek",
+        "history",
+        "undo_last",
+        "clear"
+      ],
+      "imports": [
+        "from core.undo import push_undo",
+        "from __future__ import annotations",
+        "import threading",
+        "import time",
+        "from dataclasses import dataclass, field",
+        "from typing import Callable"
+      ],
+      "lines": 122
+    },
+    "core\\viseme.py": {
+      "classes": [
+        "VisemeStream:"
+      ],
+      "functions": [
+        "to_latin",
+        "coverage",
+        "text_to_visemes",
+        "__init__",
+        "reset",
+        "feed_text",
+        "pending",
+        "_step_seconds",
+        "frames"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import unicodedata",
+        "from collections import deque"
+      ],
+      "lines": 276
+    },
+    "core\\wake_word.py": {
+      "classes": [
+        "WakeWordDetector:"
+      ],
+      "functions": [
+        "is_installed",
+        "is_ready",
+        "install_and_download",
+        "__init__",
+        "start",
+        "stop",
+        "ready",
+        "feed",
+        "_loop",
+        "_drain"
+      ],
+      "imports": [
+        "from __future__ import annotations",
+        "import queue",
+        "import subprocess",
+        "import sys",
+        "import threading",
+        "from pathlib import Path",
+        "from typing import Callable",
+        "import importlib.util",
+        "import openwakeword",
+        "import openwakeword.utils as _u"
+      ],
+      "lines": 212
+    },
+    "core\\__init__.py": {
+      "classes": [],
+      "functions": [],
+      "imports": [],
+      "lines": 1
+    }
+  },
+  "plugins": {
+    "plugins\\_template.py": {
+      "classes": [],
+      "functions": [
+        "run"
+      ],
+      "imports": [],
+      "lines": 46
+    },
+    "plugins\\__init__.py": {
+      "classes": [],
+      "functions": [],
+      "imports": [],
+      "lines": 1
+    }
+  },
+  "memory": {
+    "memory\\config_manager.py": {
+      "classes": [],
+      "functions": [
+        "get_base_dir",
+        "ensure_config_dir",
+        "config_exists",
+        "save_api_keys",
+        "load_api_keys",
+        "get_gemini_key",
+        "is_configured",
+        "get_assistant_name",
+        "get_user_name",
+        "save_assistant_config"
+      ],
+      "imports": [
+        "import json",
+        "import sys",
+        "from pathlib import Path"
+      ],
+      "lines": 384
+    },
+    "memory\\memory_manager.py": {
+      "classes": [],
+      "functions": [
+        "get_base_dir",
+        "_empty_memory",
+        "load_memory",
+        "_all_entries",
+        "set_trim_notifier",
+        "_trim_to_limit",
+        "save_memory",
+        "_truncate_value",
+        "_recursive_update",
+        "update_memory"
+      ],
+      "imports": [
+        "import json",
+        "import re",
+        "from datetime import datetime",
+        "from threading import Lock",
+        "from pathlib import Path",
+        "import sys"
+      ],
+      "lines": 479
+    },
+    "memory\\__init__.py": {
+      "classes": [],
+      "functions": [],
+      "imports": [],
+      "lines": 1
+    }
+  },
+  "dashboard": {
+    "dashboard\\server.py": {
+      "classes": [
+        "DashboardServer:"
+      ],
+      "functions": [
+        "_make_uploads_dir",
+        "_get_gemini_key",
+        "_derive_key",
+        "_decrypt_cbc",
+        "_ensure_network_access",
+        "_netsh_rule_exists",
+        "_network_is_public",
+        "_cleanup",
+        "_privileged",
+        "_ensure_crypto_js"
+      ],
+      "imports": [
+        "import asyncio",
+        "import base64",
+        "import hashlib",
+        "import re",
+        "import secrets",
+        "import socket",
+        "import string",
+        "import time",
+        "from pathlib import Path",
+        "from fastapi import FastAPI, WebSocket, WebSocketDisconnect, Request"
+      ],
+      "lines": 885
+    },
+    "dashboard\\__init__.py": {
+      "classes": [],
+      "functions": [],
+      "imports": [],
+      "lines": 1
+    }
+  },
+  "config": {
+    "config\\__init__.py": {
+      "classes": [],
+      "functions": [
+        "_platform_os",
+        "get_config",
+        "get_os",
+        "is_windows",
+        "is_mac",
+        "is_linux"
+      ],
+      "imports": [
+        "import json, os, platform",
+        "from pathlib import Path"
+      ],
+      "lines": 27
+    }
+  },
+  "entry_points": {
+    "main.py": "J:\\Mark-LV\\main.py",
+    "setup.py": "J:\\Mark-LV\\setup.py"
+  },
+  "file_stats": {
+    "total_files": 62,
+    "total_py_files": 49,
+    "total_size_bytes": 1331588,
+    "by_extension": {
+      "": 2,
+      ".py": 49,
+      ".md": 1,
+      ".txt": 2,
+      ".json": 1,
+      ".ico": 1,
+      ".crt": 1,
+      ".key": 1,
+      ".obj": 1,
+      ".html": 2,
+      ".js": 1
+    }
+  }
+}
