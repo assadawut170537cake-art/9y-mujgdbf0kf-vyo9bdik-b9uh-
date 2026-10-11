@@ -1,0 +1,51 @@
+name: Jules PR Verification & Quality Gate
+
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - develop
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  validate-ai-pr:
+    name: Verify AI Contributions
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js Runtime
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Enforce Protected Paths
+        run: |
+          echo "Checking for unauthorized file modifications in PR..."
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }} HEAD)
+          for file in $CHANGED_FILES; do
+            if [[ "$file" =~ ^(src/core/auth/|database/migrations/|\.env) ]]; then
+              echo "Error: Modification of restricted path detected: $file"
+              exit 1
+            fi
+          done
+          echo "Path verification passed."
+
+      - name: Run Code Linter
+        run: npm run lint --if-present
+
+      - name: Execute Automated Test Suites
+        run: npm test --if-present

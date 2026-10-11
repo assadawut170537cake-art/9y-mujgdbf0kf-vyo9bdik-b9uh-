@@ -12,9 +12,20 @@ config/whatsapp_web/          # a LINKED WhatsApp session — committing it hand
 **/token*.json                # Google OAuth tokens (Gmail / Calendar plugins)
 **/client_secret*.json        # Google OAuth client secrets
 *credentials*.json
+*secret*.json
+secrets.json
 .env
 .env.*
 paritok.yaml
+
+# ── Flutter / Mobile build artifacts ──────────────────────────────────────────
+.dart_tool/
+**/android/local.properties
+**/android/.gradle/
+**/ios/Flutter/flutter_export_environment.sh
+**/ios/Flutter/ephemeral/
+**/ios/Flutter/Generated.xcconfig
+**/windows/flutter/ephemeral/
 
 # ── Personal data the assistant accumulates about you ─────────────────────────
 memory/long_term.json
@@ -52,3 +63,19 @@ screenshots/
 Workshop_latest_x64_en-US.msi.zip
 OAuth client ID.apps.googleusercontent.com.json
 config/api_keys.json
+
+# ── Local model checkpoints & large weights (>100MB exceeds GitHub limit) ─────
+models/
+*.safetensors
+*.pt
+*.pth
+*.bin
+
+# ── Temporary, tool results, caches, archives and backups ─────────────────────
+.manus/
+unsloth_compiled_cache/
+dist_installer/
+*.zip
+*.apk
+tests/_*
+memory/*.backup*

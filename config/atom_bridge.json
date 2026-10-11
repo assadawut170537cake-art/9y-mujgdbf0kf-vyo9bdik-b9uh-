@@ -1,0 +1,9 @@
+{
+  "atom_host": "0.0.0.0",
+  "atom_port": 8765,
+  "sync_interval": 30,
+  "gdrive_enabled": false,
+  "gdrive_folder": "MarkLV_Sync",
+  "atom_url": "http://localhost:8766",
+  "_note": "สร้าง 2026-10-09 ระหว่างรวมศูนย์ ATOM เข้า Mark-LV (ระบบเดียว 2 ชื่อ: PC=JARVIS, มือถือ=ATOM). gdrive_enabled=false ตั้งใจไว้ — เปิดใช้ก็ต่อเมื่อลูกพี่สั่งเท่านั้น (ต้องเตรียม credential ก่อน ห้ามเปิดอัตโนมัติ)"
+}
