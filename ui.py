@@ -26,6 +26,15 @@ else:
 # An explicit setting from the user is left alone.
 os.environ.setdefault("QT_LOGGING_RULES", "qt.multimedia.*=false")
 
+# Load environment variables from .env (master key file)
+try:
+    from dotenv import load_dotenv
+    _env_path = (Path(__file__).resolve().parent / ".env")
+    if _env_path.exists():
+        load_dotenv(_env_path, override=False)
+except ImportError:
+    pass
+
 from PyQt6.QtCore import (
     QEasingCurve, QLineF, QMimeData, QObject, QParallelAnimationGroup, QPointF,
     QPoint, QPropertyAnimation, QRect, QRectF, QSize, QSizeF, Qt, QTimer,
@@ -5606,6 +5615,14 @@ class MainWindow(QMainWindow):
         self.hud.speaking = (state == "SPEAKING")
 
     def _check_config(self) -> bool:
+        # Ready if Gemini key is in .env (env) OR api_keys.json, plus OS is set
+        _env_key = os.environ.get("GEMINI_API_KEY", "").strip()
+        if _env_key:
+            try:
+                d = json.loads(API_FILE.read_text(encoding="utf-8"))
+                return bool(_env_key) and bool(d.get("os_system"))
+            except Exception:
+                return True  # env key present even without config file
         if not API_FILE.exists(): return False
         try:
             d = json.loads(API_FILE.read_text(encoding="utf-8"))
@@ -5632,6 +5649,17 @@ class MainWindow(QMainWindow):
             json.dumps({"gemini_api_key": key, "os_system": os_name}, indent=4),
             encoding="utf-8",
         )
+        # Also persist to .env as the master key source
+        try:
+            _env_path = CONFIG_DIR.parent / ".env"
+            _env_text = _env_path.read_text(encoding="utf-8") if _env_path.exists() else ""
+            if "GEMINI_API_KEY=" in _env_text:
+                _env_text = re.sub(r'GEMINI_API_KEY=.*', f'GEMINI_API_KEY={key}', _env_text)
+            else:
+                _env_text = (_env_text.rstrip() + f'\nGEMINI_API_KEY={key}\n') if _env_text else f'GEMINI_API_KEY={key}\n'
+            _env_path.write_text(_env_text, encoding="utf-8")
+        except Exception:
+            pass  # .env sync is best-effort; api_keys.json is the canonical fallback
         self._ready = True
         if self._overlay:
             self._overlay.hide()

@@ -55,6 +55,39 @@ class WebResearcher:
             
         return report
 
+PLUGIN = {
+    "name": "web_researcher",
+    "description": "Deep multi-source web researcher and synthesizer. Searches multiple engines and generates full research reports. Trigger: 'วิจัยเชิงลึก', 'ค้นคว้าข้อมูลละเอียด', 'deep research'.",
+    "parameters": {
+        "type": "OBJECT",
+        "properties": {
+            "query": {"type": "STRING", "description": "Research question or query topic"},
+            "num_sources": {"type": "INTEGER", "description": "Number of sources to synthesize (default: 10)"}
+        },
+        "required": ["query"]
+    }
+}
+
+def run(parameters: dict, player=None, session_memory=None) -> str:
+    query = parameters.get("query", "").strip()
+    num_sources = int(parameters.get("num_sources", 10))
+    if not query:
+        return "กรุณาระบุหัวข้อที่ต้องการค้นคว้าวิจัยครับ"
+    try:
+        researcher = WebResearcher()
+        loop = asyncio.new_event_loop()
+        report = loop.run_until_complete(researcher.search_and_synthesize(query, num_sources=num_sources))
+        loop.close()
+        save_file = f"research_{query[:20].replace(' ', '_')}.md"
+        with open(save_file, "w", encoding="utf-8") as f:
+            f.write(report)
+        msg = f"วิจัยหัวข้อ '{query}' จาก {num_sources} แหล่งข้อมูลเสร็จสิ้น บันทึกรายงานไว้ที่ {save_file} เรียบร้อยแล้วครับ"
+        if player and hasattr(player, "write_log"):
+            player.write_log(f"[WebResearcher] Completed research: {query}")
+        return msg
+    except Exception as e:
+        return f"เกิดข้อผิดพลาดในการวิจัย: {e}"
+
 async def main():
     researcher = WebResearcher()
     query = "ความสามารถใหม่ๆ ของ AI Agents ในปี 2026"
@@ -67,3 +100,4 @@ async def main():
 
 if __name__ == "__main__":
     asyncio.run(main())
+

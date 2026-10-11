@@ -24,7 +24,7 @@ class OfflineEngine:
 
     def log(self, message: str):
         if self.ui_logger:
-            self.ui_logger(f"[Offline] {message}", "sys")
+            self.ui_logger(f"[Offline] {message}")
         else:
             print(f"[Offline] {message}")
 

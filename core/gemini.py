@@ -66,6 +66,7 @@ from __future__ import annotations
 
 import asyncio
 import json
+import os
 import sys
 import time
 import threading
@@ -160,13 +161,12 @@ _LADDERS = {
 # survivable — the connect loop drops the tuning and proactive-audio fields and
 # reconnects when the server rejects them.
 LIVE_MODELS = (
-    "models/gemini-3.1-flash-live-preview",
     "models/gemini-2.5-flash-native-audio-preview-12-2025",
 )
 
 # The Live model to use for one-shot calls. main.py owns the real one; this is
 # only the fallback for when this module is imported without it (tests).
-_LIVE_FALLBACK = "models/gemini-3.1-flash-live-preview"
+_LIVE_FALLBACK = "models/gemini-2.0-flash-exp"
 
 # How many one-shot Live sessions may exist at once.
 #
@@ -296,11 +296,18 @@ def _cooling(model: str) -> bool:
 
 
 def api_key(refresh: bool = False) -> str:
-    """The Gemini key from config/api_keys.json. Cached; never raises."""
+    """The Gemini key from GEMINI_API_KEY in .env (os.environ), with fallback
+    to config/api_keys.json for backwards compatibility. Cached; never raises."""
     global _cached_key
     with _key_lock:
         if _cached_key is not None and not refresh:
             return _cached_key
+        # Primary: environment variable (loaded from .env by main.py)
+        env_key = os.environ.get("GEMINI_API_KEY", "").strip()
+        if env_key:
+            _cached_key = env_key
+            return _cached_key
+        # Fallback: config/api_keys.json (legacy)
         try:
             data = json.loads(_KEY_FILE.read_text(encoding="utf-8"))
             _cached_key = str(data.get("gemini_api_key") or "")

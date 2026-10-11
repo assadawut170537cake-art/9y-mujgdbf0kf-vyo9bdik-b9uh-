@@ -1,6 +1,16 @@
 import json
+import os
 import sys
 from pathlib import Path
+
+# Load environment variables from .env (master key file)
+try:
+    from dotenv import load_dotenv
+    _env_path = Path(__file__).resolve().parent.parent / ".env"
+    if _env_path.exists():
+        load_dotenv(_env_path, override=False)
+except ImportError:
+    pass
 
 def get_base_dir() -> Path:
     if getattr(sys, "frozen", False):
@@ -44,6 +54,10 @@ def load_api_keys() -> dict:
         return {}
 
 def get_gemini_key() -> str | None:
+    """Gemini API key: prefer GEMINI_API_KEY from .env, fall back to api_keys.json."""
+    _env_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if _env_key:
+        return _env_key
     return load_api_keys().get("gemini_api_key")
 
 def is_configured() -> bool:

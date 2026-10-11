@@ -51,8 +51,9 @@ def sync_memory_to_cloud(memory_data: dict) -> bool:
         return False
 
     try:
-        # อ่าน gdrive_vault จาก Atom
-        atom_dir = Path("J:/อะตอม")
+        # ใช้ gdrive_vault ที่ย้ายเข้ามาอยู่ใน sync/ ของ Mark LV แล้ว
+        # (ไม่ชี้ไป J:\อะตอม อีกต่อไป — รวมศูนย์เป็นระบบเดียวแล้ว)
+        atom_dir = SYNC_DIR
         gdrive_script = atom_dir / "gdrive_vault.py"
         if not gdrive_script.exists():
             return False
@@ -76,7 +77,7 @@ def sync_memory_from_cloud() -> Optional[dict]:
         return None
 
     try:
-        atom_dir = Path("J:/อะตอม")
+        atom_dir = SYNC_DIR
         gdrive_script = atom_dir / "gdrive_vault.py"
         if not gdrive_script.exists():
             return None

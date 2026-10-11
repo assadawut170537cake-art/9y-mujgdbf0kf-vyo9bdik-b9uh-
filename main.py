@@ -43,6 +43,14 @@ import sys
 import traceback
 from datetime import datetime
 from pathlib import Path
+from dotenv import load_dotenv
+
+# Load environment variables from .env (master key file) before any other imports
+_load_dotenv_path = Path(__file__).resolve().parent / ".env"
+if _load_dotenv_path.exists():
+    load_dotenv(_load_dotenv_path, override=False)
+del _load_dotenv_path
+
 from core.grok_engine import GrokEngine
 
 import sounddevice as sd  # pyright: ignore
@@ -81,6 +89,8 @@ from core                      import confirm as confirm_gate
 from core.offline_engine       import OfflineEngine
 from core                      import audio_devices
 from core.action_loader        import discover_actions
+from src.services.decision_model import route_action, record_decision
+
 from core.echo                 import EchoGuard
 from core.viseme               import VisemeStream
 from core.wake_word            import (
@@ -292,7 +302,13 @@ def _render_prompt(template: str, values: dict) -> str:
     return out
 
 
+import os
+
 def _get_api_key() -> str:
+    """Gemini API key: prefer ENV (GEMINI_API_KEY from .env), fall back to api_keys.json."""
+    _env_key = os.environ.get("GEMINI_API_KEY", "").strip()
+    if _env_key:
+        return _env_key
     with open(API_CONFIG_PATH, "r", encoding="utf-8") as f:
         return json.load(f)["gemini_api_key"]
 
@@ -581,6 +597,21 @@ class JarvisLive:
 
         self.ui.on_push_to_talk   = self.set_push_to_talk
         self.ui.ptt_hold          = self._on_ptt
+
+        # ── Offline Decision Model (router คำสั่ง→action) ─────────────────────
+        # สร้างคู่ (name, description) จากการค้นหา actions/*.py ครั้งเดือน
+        # startup — stdlib-only (core.action_loader), แต่ละ action เองก็นำเข้า
+        # ตัวมันเองแบบ try/except (เหมือนแอปปกติ) ดังนั้นฟีเจอร์นี้จะไม่ทำให้起步
+        # เสีย
+        self._decision_actions = [
+            (rec.name, rec.description)
+            for rec in discover_actions(BASE_DIR / "actions",
+                                        logger=lambda msg: None)._all_records
+            if getattr(rec, "valid", False)
+        ]
+
+        # ── Push-to-talk ──────────────────────────────────────────────────────
+
         self.ui.on_text_command   = self._on_text_command
         self.ui.on_mode_change    = self._on_mode_change
         self.ui.on_remote_clicked = self._make_remote_key
@@ -851,6 +882,36 @@ class JarvisLive:
         if self._wake_enabled and not self._awake:
             self.ui.write_log("SYS: I'm asleep — say 'Hey Jarvis' or tap WAKE NOW first.")
             return
+        # ── Pre-check: Offline Decision Model (work 2.3 / 2.4) ─────────────────
+        # router คำสั่ง→action แบบ pure local: หาว่า "สั่งอะไร" ก่อน จากนั้น
+        # execute เองผ่านเดิม + เก็บ log ไปเทรนโมเดลต่อ ถ้าไม่แน่ใจพอ
+        # จะปล่อยให้ Gemini Live ตัดสินใจตามเดิม
+        try:
+            _result = route_action(text, self._decision_actions)
+            if not _result["needs_fallback"] and _result["action"]:
+                record_decision("logs/routing.jsonl", text,
+                                _result["action"], _result["confidence"])
+                _ctx = {"player": self.ui, "speak": self.speak,
+                        "response": None, "session_memory": None}
+                try:
+                    asyncio.get_event_loop().run_in_executor(
+                        None,
+                        lambda: self._action_registry.run(
+                            _result["action"], {"command": text}, _ctx))
+                except Exception as _e:      # noqa: BLE001
+                    self.ui.write_log(f" SYS: router executed "
+                                       f"{_result['action']} but it failed: {_e}")
+                return          # สั่ง action เสร็จแล้ว — ห้ามส่งต่อให้ Gemini
+        except Exception as _e:              # noqa: BLE001
+            self.ui.write_log(f" SYS: decision router pre-check failed: {_e}")
+
+        asyncio.run_coroutine_threadsafe(
+            self.session.send_client_content(
+                turns={"role": "user", "parts": [{"text": text}]},
+                turn_complete=True
+            ), self._loop
+        )
+
         asyncio.run_coroutine_threadsafe(
             self.session.send_client_content(
                 turns={"role": "user", "parts": [{"text": text}]},
@@ -1082,14 +1143,15 @@ class JarvisLive:
             ),
         )
         if self._enhanced_live:
+            pass
             # Proactive audio: JARVIS stays silent when speech isn't addressed
             # to it (background chatter, talking to someone else in the room).
             # (Affective dialog was dropped: gemini-3.1-flash-live does not
             #  support it, and it never reliably detected tone in practice.
             #  To restore it on a 2.5 native-audio model, add back:
             #  cfg["enable_affective_dialog"] = True )
-            if get_proactive_audio_enabled():
-                cfg["proactivity"] = types.ProactivityConfig(proactive_audio=True)
+            # if get_proactive_audio_enabled():
+            #     cfg["proactivity"] = types.ProactivityConfig(proactive_audio=True)
 
         if self._tuned_live:
             cfg.update(self._tuning_config())
@@ -2165,11 +2227,10 @@ class JarvisLive:
                 config = self._build_config()
 
                 # Fresh client on every reconnect — avoids stale HTTP session state
-                # v1alpha carries proactive audio; if it gets rejected we fall
-                # back to v1beta.
+                # v1beta is required for certain Live API access tokens/methods.
                 client = genai.Client(
                     api_key=_get_api_key(),
-                    http_options={"api_version": "v1alpha" if self._enhanced_live else "v1beta"}
+                    http_options={"api_version": "v1beta"}
                 )
 
                 async with (

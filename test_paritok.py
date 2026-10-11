@@ -3,7 +3,11 @@ import os
 from dotenv import load_dotenv
 
 # Load Paritok API Key from .env
-load_dotenv()
+import os
+from pathlib import Path
+_env_path = Path(__file__).resolve().parent / ".env"
+if _env_path.exists():
+    load_dotenv(_env_path, override=False)
 
 # Add master-fetch/src to sys.path
 import sys
